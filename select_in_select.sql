@@ -1,53 +1,53 @@
 -- List each country name where the population is larger than that of 'Russia'.
-SELECT NAME
+SELECT name
 FROM   world
 WHERE  population > (SELECT population
                      FROM   world
-                     WHERE  NAME = 'russia');
+                     WHERE  name = 'russia');
 
 -- Show the countries in Europe with a per capita GDP greater than 'United Kingdom'.
-SELECT NAME
+SELECT name
 FROM   world
 WHERE  continent = 'europe'
        AND gdp / population > (SELECT gdp / population
                                FROM   world
-                               WHERE  NAME = 'united kingdom');
+                               WHERE  name = 'united kingdom');
 
 -- List the name and continent of countries in the continents containing either Argentina or Australia. Order by name of the country.
-SELECT NAME,
+SELECT name,
        continent
 FROM   world
 WHERE  continent IN (SELECT continent
                      FROM   world
-                     WHERE  NAME = 'argentina'
-                             OR NAME = 'australia')
-ORDER  BY NAME;
+                     WHERE  name = 'argentina'
+                             OR name = 'australia')
+ORDER  BY name;
 
 -- Which country has a population that is more than Canada but less than Poland? Show the name and the population.
-SELECT NAME,
+SELECT name,
        population
 FROM   world
 WHERE  population > (SELECT population
                      FROM   world
-                     WHERE  NAME = 'canada')
+                     WHERE  name = 'canada')
        AND population < (SELECT population
                          FROM   world
-                         WHERE  NAME = 'poland');
+                         WHERE  name = 'poland');
 
 -- Germany (population 80 million) has the largest population of the countries in Europe. 
 -- Austria (population 8.5 million) has 11% of the population of Germany.
 -- Show the name and the population of each country in Europe. Show the population as a 
 -- percentage of the population of Germany.
-SELECT NAME,
+SELECT name,
        Concat(CONVERT(DECIMAL, 100 * population / (SELECT population
                                                    FROM   world
-                                                   WHERE  NAME = 'Germany')),
+                                                   WHERE  name = 'Germany')),
        '%')
 FROM   world
 WHERE  continent = 'Europe';
 
 --Which countries have a GDP greater than every country in Europe? [Give the name only.] (Some countries may have NULL gdp values)
-SELECT NAME
+SELECT name
 FROM   world
 WHERE  gdp > (SELECT Max(gdp)
               FROM   world
@@ -55,7 +55,7 @@ WHERE  gdp > (SELECT Max(gdp)
 
 --Largest in each continent
 SELECT continent,
-       NAME,
+       name,
        area
 FROM   world x
 WHERE  area >= ALL (SELECT area
@@ -65,16 +65,16 @@ WHERE  area >= ALL (SELECT area
 
 -- List each continent and the name of the country that comes first alphabetically.
 SELECT continent,
-       NAME
+       name
 FROM   world x
-WHERE  NAME <= ALL (SELECT NAME
+WHERE  name <= ALL (SELECT name
                     FROM   world y
                     WHERE  x.continent = y.continent);
 
 -- Find the continents where all countries have a population <= 25000000. Then find the 
 -- names of the countries associated with these continents. Show name, continent and 
 -- population.
-SELECT NAME,
+SELECT name,
        continent,
        population
 FROM   world x
@@ -85,10 +85,10 @@ WHERE  25000000 >= ALL (SELECT population
 
 -- Some countries have populations more than three times that of any of their neighbours  
 --(in the same continent). Give the countries and continents.
-SELECT NAME,
+SELECT name,
        continent
 FROM   world x
 WHERE  population / 3 > ALL (SELECT population
                              FROM   world y
                              WHERE  x.continent = y.continent
-                                    AND x.NAME != y.NAME);
+                                    AND x.name != y.name);
